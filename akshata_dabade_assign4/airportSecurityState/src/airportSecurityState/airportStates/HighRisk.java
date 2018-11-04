@@ -1,27 +1,72 @@
 package airportSecurityState.src.airportSecurityState.airportStates;
 
+import airportSecurityState.src.airportSecurityState.util.FileProcessor;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static java.lang.System.exit;
+
 public class HighRisk implements AirportStateI
 {
-
+    public int avgTrafficPerDay;
+    public int avgProhibitedItemsPerDay;
+    public int totalProhibitedItems;
+    FileProcessor fp;
+    public String line;
+    public int numOfDays;
+    public int travellers;
+    public String item;
+    public Days days = new Days(fp);
+    public ArrayList<String> lineData = new ArrayList<String>();
+    public HighRisk(FileProcessor fpIn)
+    {
+        fp = fpIn;
+    }
     @Override
-    public void increaseOrDecreaseSecurity()
+    public void increaseOrDecreaseSecurity(AirportContextI context, Days days) throws IOException {
+
+        LowRisk low = new LowRisk(fp);
+        ModerateRisk mod = new ModerateRisk(fp);
+        lineData = days.retrieveInformation();
+        if(lineData != null)
+        {
+            numOfDays = Integer.parseInt(lineData.get(0));
+            travellers = Integer.parseInt(lineData.get(1));
+            totalProhibitedItems = Integer.parseInt(lineData.get(2));
+        }
+
+        else if(lineData == null)
+            exit(0);
+        System.out.println("no of prohibited items:" + totalProhibitedItems);
+        System.out.println("Line in high :" + lineData);
+        if(numOfDays==(-1) || travellers==(-1))
+            exit(0);
+            avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
+        avgProhibitedItemsPerDay = setAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
+
+            if (0 <= avgTrafficPerDay && 4 > avgTrafficPerDay)
+                context.setState(low, days);
+            else if (4 <= avgTrafficPerDay && avgTrafficPerDay < 8)
+                context.setState(mod, days);
+            else
+                context.setState(this, days);
+    }
+
+    public int setAvgProhibitedItemsPerDay(int totalProhibitedItems, int totalNumberOfDays)
     {
 
+        return (totalProhibitedItems/totalNumberOfDays);
     }
-    public void setAvgTrafficPerDay()
+    public int getAvgTrafficPerDay(int totalNumberOfTravellers, int totalNumberOfDays)
     {
-
-    }
-    public int getAvgTrafficPerDay()
-    {
-        return 0;
-    }
-    public void setAvgProhibitedItemsPerDay()
-    {
-
+        return(totalNumberOfTravellers/totalNumberOfDays);
     }
     public int getAvgProhibitedItemsPerDay()
     {
         return 0;
+    }
+    public String toString(){
+        return "[2,4,6,8,10]";
     }
 }
