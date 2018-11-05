@@ -40,21 +40,25 @@ public class LowRisk implements AirportStateI
 
         else if(lineData == null)
             exit(0);
-        System.out.println("no of prohibited items:" + totalProhibitedItems);
-            System.out.println("Line in Low :" + lineData);
+//        System.out.println("no of prohibited items:" + totalProhibitedItems);
+//            System.out.println("Line in Low :" + lineData);
             if(numOfDays==(-1) || travellers==(-1))
                 exit(0);
+
             avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
             avgProhibitedItemsPerDay = setAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
-            if (avgTrafficPerDay >= 8)
-            context.setState(high, days);
-            else if (4 <= avgTrafficPerDay && 8 > avgTrafficPerDay)
+       // System.out.println("numdays: "+numOfDays +" travellers:" + travellers + " total prohibited item :" + totalProhibitedItems + "avgtraffic: "+ avgTrafficPerDay +"avgprohibited" +avgProhibitedItemsPerDay);
+            if (avgTrafficPerDay >= 8 || avgProhibitedItemsPerDay >= 4)
+            {
+
+                context.setState(high, days);
+            }
+
+            else if ((4 <= avgTrafficPerDay && 8 > avgTrafficPerDay) || (2 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 4))
                 context.setState(mod, days);
 
-         else
+            else
              context.setState(this,days);
-
-
         }
 
 

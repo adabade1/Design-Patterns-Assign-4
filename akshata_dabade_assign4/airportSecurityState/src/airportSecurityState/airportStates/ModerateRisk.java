@@ -25,7 +25,6 @@ public class ModerateRisk implements AirportStateI
     }
     @Override
     public void increaseOrDecreaseSecurity(AirportContextI context, Days days) throws IOException {
-        System.out.println("no of prohibited items:" + totalProhibitedItems);
         LowRisk low = new LowRisk(fp);
         HighRisk high = new HighRisk(fp);
         lineData = days.retrieveInformation();
@@ -37,18 +36,27 @@ public class ModerateRisk implements AirportStateI
         }
         else if(lineData == null)
             exit(0);
-        System.out.println("no of prohibited items:" + totalProhibitedItems);
-        System.out.println("Line in moderate :" + lineData);
+//        System.out.println("no of prohibited items:" + totalProhibitedItems);
+//        System.out.println("Line in moderate :" + lineData);
         if(numOfDays==(-1) || travellers==(-1))
             exit(0);
         avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
         avgProhibitedItemsPerDay = setAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
-        if (0 <= avgTrafficPerDay && 4 > avgTrafficPerDay)
-            context.setState(low, days);
-        else if (avgTrafficPerDay >= 8)
+       // System.out.println("numdays: "+numOfDays +" travellers:" + travellers + " total prohibited item :" + totalProhibitedItems + "avgtraffic: "+ avgTrafficPerDay +"avgprohibited" +avgProhibitedItemsPerDay);
+        if (avgTrafficPerDay >= 8 || avgProhibitedItemsPerDay >= 4)
+        {
+
             context.setState(high, days);
-        else
+        }
+
+        else if((4 <= avgTrafficPerDay && 8 > avgTrafficPerDay) || (2 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 4))
             context.setState(this, days);
+
+        else if((0 <= avgTrafficPerDay && 4 > avgTrafficPerDay) || (0 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 2))
+            context.setState(low, days);
+
+
+
 
     }
     public int setAvgProhibitedItemsPerDay(int totalProhibitedItems, int totalNumberOfDays)

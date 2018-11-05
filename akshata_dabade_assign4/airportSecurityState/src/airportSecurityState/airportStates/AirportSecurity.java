@@ -16,7 +16,7 @@ public class AirportSecurity implements AirportContextI {
     @Override
     public void setState(AirportStateI state, Days days) throws IOException {
         currentState = state;
-        //System.out.println(currentState.toString());
+        System.out.println(currentState.toString());
         currentState.increaseOrDecreaseSecurity(this, days);
     }
     public AirportStateI getState()

@@ -14,7 +14,7 @@ public class Days {
     public String day;
     public String item;
     public int flag = 0;
-    public ArrayList<Integer> numberOfDays = new ArrayList<Integer>();
+    public ArrayList<String> numberOfDays = new ArrayList<String>();
 
 
     public Days(FileProcessor fpIn) {
@@ -29,8 +29,8 @@ public class Days {
             travellers++;
             day = line.split(";")[0].split(":")[1];
             item = line.split(";")[1].split(":")[1];
-            if (!numberOfDays.contains(days)) {
-                numberOfDays.add(days);
+            if (!numberOfDays.contains(day)) {
+                numberOfDays.add(day);
             }
             if(item.equalsIgnoreCase("plants") || item.equalsIgnoreCase("grains") || item.equalsIgnoreCase("nailcutters")
                     ||item.equalsIgnoreCase("endangeredanimals"))

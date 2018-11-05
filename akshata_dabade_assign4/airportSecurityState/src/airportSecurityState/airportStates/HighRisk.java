@@ -38,24 +38,28 @@ public class HighRisk implements AirportStateI
 
         else if(lineData == null)
             exit(0);
-        System.out.println("no of prohibited items:" + totalProhibitedItems);
-        System.out.println("Line in high :" + lineData);
+//        System.out.println("no of prohibited items:" + totalProhibitedItems);
+//        System.out.println("Line in high :" + lineData);
         if(numOfDays==(-1) || travellers==(-1))
             exit(0);
             avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
         avgProhibitedItemsPerDay = setAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
+       // System.out.println("numdays: "+numOfDays +" travellers:" + travellers + " total prohibited item :" + totalProhibitedItems + "avgtraffic: "+ avgTrafficPerDay +"avgprohibited" +avgProhibitedItemsPerDay);
 
-            if (0 <= avgTrafficPerDay && 4 > avgTrafficPerDay)
+        if(avgTrafficPerDay >= 8 || avgProhibitedItemsPerDay >= 4)
+        context.setState(this, days);
+
+        else if ((4 <= avgTrafficPerDay && 8 > avgTrafficPerDay) || (2 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 4))
+            context.setState(mod, days);
+
+
+          else if ((0 <= avgTrafficPerDay && 4 > avgTrafficPerDay) || (0 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 2))
                 context.setState(low, days);
-            else if (4 <= avgTrafficPerDay && avgTrafficPerDay < 8)
-                context.setState(mod, days);
-            else
-                context.setState(this, days);
-    }
 
+
+    }
     public int setAvgProhibitedItemsPerDay(int totalProhibitedItems, int totalNumberOfDays)
     {
-
         return (totalProhibitedItems/totalNumberOfDays);
     }
     public int getAvgTrafficPerDay(int totalNumberOfTravellers, int totalNumberOfDays)
