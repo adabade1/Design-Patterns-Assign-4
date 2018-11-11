@@ -1,21 +1,58 @@
 package airportSecurityState.src.airportSecurityState.driver;
 
-import airportSecurityState.src.airportSecurityState.airportStates.AirportContextI;
-import airportSecurityState.src.airportSecurityState.airportStates.AirportSecurity;
-import airportSecurityState.src.airportSecurityState.airportStates.Days;
-import airportSecurityState.src.airportSecurityState.airportStates.LowRisk;
+import airportSecurityState.src.airportSecurityState.airportStates.*;
+import airportSecurityState.src.airportSecurityState.util.FileDisplayInterface;
 import airportSecurityState.src.airportSecurityState.util.FileProcessor;
+import airportSecurityState.src.airportSecurityState.util.Results;
+
+import java.io.File;
+
 public class Driver
 {
     public static void main(String args[]) throws Exception {
-        FileProcessor fp = new FileProcessor("C:\\Users\\Akshata\\Desktop\\in.txt");
-        AirportContextI context = new AirportSecurity(new LowRisk(fp));
-        LowRisk low = new LowRisk(fp);
-        Days days = new Days(fp);
 
-//        System.out.println(days.setDays());
-//        System.out.println(days.getTravellers());
+//        if (args.length != 3 || (args[0].equals("${arg0}")) || (args[1].equals("${arg1}")) || (args[2].equals("${arg2}"))) {
+//            System.out.println("Error: Incorrect number of arguments. Program accepts 3 arguments. Input File, Output File and Debug Value.");
+//            System.exit(0);
+//        }
+//
+//        File inputFile = new File(args[0]);
+//        if(!inputFile.exists())
+//        {
+//            System.err.println("Input file does not exist.");
+//            System.exit(0);
+//        }
+//        File outputFile = new File(args[1]);
+//        if(outputFile.exists()) {
+//            if (outputFile.length() != 0) {
+//                System.err.println("Output file should be empty.");
+//                System.exit(0);
+//            }
+//        }
+//        int debugValue;
+//        try
+//        {
+//            debugValue = Integer.parseInt(args[2]);
+//            if(debugValue < 0 || debugValue > 4) {
+//                System.err.println("Debug value should be an integer value between 0 and 4 inclusive.");
+//                System.exit(0);
+//            }
+//
+//        }
+//        catch(NumberFormatException e)
+//        {
+//            System.err.println("Debug value should be an integer value between 0 and 4 inclusive");
+//            System.exit(0);
+//        }
+//        FileProcessor fp = new FileProcessor(inputFile);
+//        FileDisplayInterface fd = new Results(outputFile);
+        FileDisplayInterface fd = new Results("C:\\Users\\Akshata\\Desktop\\out.txt");
+
+        FileProcessor fp = new FileProcessor("C:\\Users\\Akshata\\Desktop\\in.txt");
+        AirportStateI low = new LowRisk(fp,fd);
+        Days days = new Days(fp);
+        AirportContextI context = new AirportSecurity(low);
         low.increaseOrDecreaseSecurity(context, days);
-        System.out.println(context.getState().toString());
+        fd.WriteToFile(context.getState().toString());
     }
 }

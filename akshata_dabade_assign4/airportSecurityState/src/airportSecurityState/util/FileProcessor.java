@@ -20,7 +20,7 @@ public class FileProcessor
 	 * by line.
 	 * @return String This returns one line at a time.
 	 */
-	 public String Access_File() throws IOException {
+	 public String accessFile() throws IOException {
 		 	String line;
 		 	while((line = input.readLine()) != null)
 		 	{

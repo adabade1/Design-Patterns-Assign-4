@@ -1,4 +1,5 @@
 package airportSecurityState.src.airportSecurityState.airportStates;
+import airportSecurityState.src.airportSecurityState.util.FileDisplayInterface;
 import airportSecurityState.src.airportSecurityState.util.FileProcessor;
 
 import java.io.IOException;
@@ -8,78 +9,74 @@ import static java.lang.System.exit;
 
 public class LowRisk implements AirportStateI
 {
-    public int avgTrafficPerDay;
-    public int totalProhibitedItems = 0;
-    public int avgProhibitedItemsPerDay;
-    FileProcessor fp;
-   public String line;
-   public int numOfDays;
-   public int travellers;
-   public String item;
-
-   public Days days = new Days(fp);
-   public ArrayList<String> lineData = new ArrayList<String>();
-   public LowRisk(FileProcessor fpIn)
+    private int avgTrafficPerDay;
+    private int totalProhibitedItems = 0;
+    private int avgProhibitedItemsPerDay;
+    private FileProcessor fp;
+    private FileDisplayInterface fd;
+    private String line;
+    private int numOfDays;
+    private int travellers;
+    private String item;
+    private Days days = new Days(fp);
+    private ArrayList<String> lineData = new ArrayList<String>();
+    public LowRisk(FileProcessor fpIn, FileDisplayInterface fdOut)
     {
         fp = fpIn;
-
+        fd = fdOut;
     }
 
     @Override
-    public void increaseOrDecreaseSecurity(AirportContextI context, Days days) throws IOException {
+    public void increaseOrDecreaseSecurity(AirportContextI context, Days days) throws IOException
+    {
 
-        ModerateRisk mod = new ModerateRisk(fp);
-        HighRisk high = new HighRisk(fp);
-            lineData = days.retrieveInformation();
+        AirportStateI mod = new ModerateRisk(fp,fd);
+        AirportStateI high = new HighRisk(fp,fd);
+        lineData = days.retrieveInformation();
         if(lineData != null)
         {
-            numOfDays = Integer.parseInt(lineData.get(0));
-            travellers = Integer.parseInt(lineData.get(1));
-            totalProhibitedItems = Integer.parseInt(lineData.get(2));
+                try {
+                    numOfDays = Integer.parseInt(lineData.get(0));
+                }
+                catch(NumberFormatException e)
+                {
+                    System.err.println("Day number should be an integer value in the input file");
+                    System.exit(0);
+                }
+                travellers = Integer.parseInt(lineData.get(1));
+                totalProhibitedItems = Integer.parseInt(lineData.get(2));
         }
 
         else if(lineData == null)
             exit(0);
-//        System.out.println("no of prohibited items:" + totalProhibitedItems);
-//            System.out.println("Line in Low :" + lineData);
-            if(numOfDays==(-1) || travellers==(-1))
-                exit(0);
 
-            avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
-            avgProhibitedItemsPerDay = setAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
-       // System.out.println("numdays: "+numOfDays +" travellers:" + travellers + " total prohibited item :" + totalProhibitedItems + "avgtraffic: "+ avgTrafficPerDay +"avgprohibited" +avgProhibitedItemsPerDay);
-            if (avgTrafficPerDay >= 8 || avgProhibitedItemsPerDay >= 4)
-            {
-
-                context.setState(high, days);
-            }
-
-            else if ((4 <= avgTrafficPerDay && 8 > avgTrafficPerDay) || (2 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 4))
-                context.setState(mod, days);
-
-            else
-             context.setState(this,days);
+        avgTrafficPerDay = getAvgTrafficPerDay(travellers, numOfDays);
+        avgProhibitedItemsPerDay = getAvgProhibitedItemsPerDay(totalProhibitedItems,numOfDays);
+        if (avgTrafficPerDay >= 8 || avgProhibitedItemsPerDay >= 4)
+        {
+            context.setState(high, days, fd);
         }
 
+        else if ((4 <= avgTrafficPerDay && 8 > avgTrafficPerDay) || (2 <= avgProhibitedItemsPerDay && avgProhibitedItemsPerDay < 4))
+            context.setState(mod, days, fd);
 
-    public void setAvgTrafficPerDay()
-    {
-
+        else
+             context.setState(this,days, fd);
     }
+
+
     public int getAvgTrafficPerDay(int totalNumberOfTravellers, int totalNumberOfDays)
     {
         return(totalNumberOfTravellers/totalNumberOfDays);
     }
-    public int setAvgProhibitedItemsPerDay(int totalProhibitedItems, int totalNumberOfDays)
+
+    public int getAvgProhibitedItemsPerDay(int totalProhibitedItems, int totalNumberOfDays)
     {
 
         return (totalProhibitedItems/totalNumberOfDays);
     }
-    public int getAvgProhibitedItemsPerDay()
-    {
-        return 0;
-    }
+
     public String toString(){
-        return "[1,3,5,7,9]";
+        return "1 3 5 7 9";
     }
 }
