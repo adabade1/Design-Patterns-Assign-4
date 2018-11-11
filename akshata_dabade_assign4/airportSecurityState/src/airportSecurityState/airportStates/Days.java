@@ -1,9 +1,12 @@
 package airportSecurityState.src.airportSecurityState.airportStates;
 
 import airportSecurityState.src.airportSecurityState.util.FileProcessor;
+import airportSecurityState.src.airportSecurityState.util.MyLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static airportSecurityState.src.airportSecurityState.util.MyLogger.DebugLevel.PROHIBITED_ITEM_DETECTED;
 
 public class Days {
     private String line;
@@ -14,9 +17,6 @@ public class Days {
     private String day;
     private String item;
     private int flag = 0;
-    public ArrayList<String> numberOfDays = new ArrayList<String>();
-
-
     public Days(FileProcessor fpIn) {
         fp = fpIn;
     }
@@ -35,18 +35,21 @@ public class Days {
             catch (ArrayIndexOutOfBoundsException e)
             {
                 System.err.println("Incorrect File");
+			System.exit(0);
             }
             if(item.equals(null)) {
                 System.err.println("Incorrect File");
-            }
-            if (!numberOfDays.contains(day)) {
-                numberOfDays.add(day);
+			System.exit(0);
             }
 
                 if(item.equalsIgnoreCase("plants") || item.equalsIgnoreCase("grains") || item.equalsIgnoreCase("nailcutters")
                         ||item.equalsIgnoreCase("endangeredanimals"))
+                {
                     totalProhibitedItems++;
-            lineData.add(String.valueOf(numberOfDays.size()));
+                    MyLogger.writeMessage("Prohibited item detected : "+item + " for traveller : "+travellers, PROHIBITED_ITEM_DETECTED);
+                }
+
+            lineData.add(day);
             lineData.add(String.valueOf(travellers));
             lineData.add(String.valueOf(totalProhibitedItems));
             return lineData;

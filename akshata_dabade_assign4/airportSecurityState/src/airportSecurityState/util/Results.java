@@ -16,12 +16,14 @@ public class Results implements FileDisplayInterface {
      * This method is used to write to the output files
      * void This returns nothing.
      */
-    public void WriteToFile(String toprint) throws  IOException
+    public void writeToFile(String toprint) throws  IOException
     {
-        PrintWriter writetofile;
+        PrintWriter writetofile=null;
+
         writetofile = new PrintWriter(new BufferedWriter(new FileWriter(outputFile, true)));
         writetofile.println(toprint);
-        writetofile.close();
+	    writetofile.close();
+       
     }
 
 }
