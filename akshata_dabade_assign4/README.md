@@ -31,7 +31,7 @@ Note: Arguments accept the absolute path of the files.
 
 
 -----------------------------------------------------------------------
-## Description: In this assignment Observer pattern is implemented for students with three digit Bnumber and courses that range between A and Z. A Binary Search Tree has been implemented to create a main tree and two backup trees from two input files (input_file.txt and delete_file.txt). The input is read line by line to create tree nodes and to update them as well. At the end, we get three identical output files with final updated Bnumber-Courses pair.
+## Description: In this assignment State pattern has implemented to decide the security level on a airport depending upon several factors such as total number of passengers, total number of hazardous luggage, etc
 -----------------------------------------------------------------------
 ### Academic Honesty statement:
 -----------------------------------------------------------------------
